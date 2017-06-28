@@ -1,12 +1,11 @@
 Perfil do Invocador
 ========================
+Nome completo:Pablo Caricio de Barros
+Data de nascimento: 06/07/1992
 
-**Nome completo:**   
-**Data de nascimento:**   
+Como nos conheceu:Uma pessoa que participa da equipe me indicou 
 
-**Como nos conheceu:**
-
-**Nick no LOL (opcional... por enquanto):**   
-**Perfil na STEAM:**
+Nick no LOL (opcional... por enquanto) Pablobf4  
+Perfil na STEAM: Pablobf4
 
 
