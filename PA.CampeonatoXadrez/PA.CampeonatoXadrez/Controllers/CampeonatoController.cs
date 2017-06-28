@@ -49,7 +49,7 @@ namespace PA.CampeonatoXadrez.Controllers
                 if (ModelState.IsValid)
                 {
                     _campeonatoRepositorio.Adicionar(campeonato);
-                    return RedirectToAction("Index", "Home");
+                    return RedirectToAction("Index", "Campeonato");
                 }
             }
             catch (DataException)

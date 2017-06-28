@@ -19,7 +19,7 @@ namespace PA.CampeonatoXadrez.Controllers
             this._partidaRepositorio = _partidaRepositorio;
         }
         // GET: Partida
-        public ActionResult Index(int Id)
+        public ActionResult Index(int Id, string Nome)
         {
             @ViewBag.IdCampeonato = Id;
             var partidaViewModel = new List<PartidaViewModel>();
@@ -33,12 +33,26 @@ namespace PA.CampeonatoXadrez.Controllers
                     NomeJogador2 = i.Jogador2.Nome,
                     JogadorId1 = i.JogadorId1,
                     JogadorId2 = i.JogadorId2,
+                    Turno = i.Turno,
                     JogadorIdVencedor = i.JogadorIdVencedor,
                     PartidaId = i.Id
                 };
+                ViewBag.NomeVencedor = Nome;
+                ViewBag.Turno = PartidaViewModel.Turno;
                 partidaViewModel.Add(PartidaViewModel);
+                //if (PartidaViewModel.Turno == 3 || PartidaViewModel.Turno == 4 || PartidaViewModel.Turno == 5)
+                //{
+                //    var turno = PartidaViewModel.Turno;
+                //    var jogadorVencedor = _partidaRepositorio.First(a => a.Turno == turno && a.CampeonatoId == Id).JogadorVencedor.Nome;
+                //        //First(a => a.Turno == 3 || a.Turno == 4 || a.Turno == 5 && a.CampeonatoId == Id ).JogadorVencedor.Nome;
+                //    @ViewBag.JogadorVencedor = jogadorVencedor;
+                //}
+                
             }
 
+            
+            var vencedor = TempData["Vencedor"];
+            ViewBag.Vencedor = vencedor;
             var erro = TempData["mensagemErro"];
             if (erro != null)
                 ModelState.AddModelError("Erro", erro.ToString());
@@ -46,15 +60,12 @@ namespace PA.CampeonatoXadrez.Controllers
             return View(partidaViewModel);
         }
         
-        //public ActionResult Criar()
-        //{
-        //    return View();
-        //}
 
         public ActionResult ProximoTurno (int Id)
         {
-            // pega ultimo turno o atual
+            // pega ultimo turno(atual) ,se partida estiver null turno será zero se não tuno  vai receber o valor do turno dauqela partida 
             var ultimaPartida = _partidaRepositorio.Get(a => a.CampeonatoId == Id).OrderByDescending(p => p.Turno).FirstOrDefault();
+           
             int turno = 0;
             if (ultimaPartida != null)
             {
@@ -77,7 +88,8 @@ namespace PA.CampeonatoXadrez.Controllers
                 }
                 else
                 {
-                    jogadores = _partidaRepositorio.Get(a => a.Turno == turno).Select(a => a.JogadorVencedor).ToList();
+                    jogadores = _partidaRepositorio.Get(a => a.Turno == turno && a.CampeonatoId == Id ).Select(a => a.JogadorVencedor).ToList();
+                   
                 }
             }
 
@@ -91,6 +103,9 @@ namespace PA.CampeonatoXadrez.Controllers
             }
 
             turno++;
+
+            
+           
             //combina jogadores criandndo partida
             for(var i= 0 ; i<jogadores.Count;i++)
             {
@@ -106,6 +121,8 @@ namespace PA.CampeonatoXadrez.Controllers
 
                 _partidaRepositorio.Adicionar(partida);
             }
+            
+            
             return RedirectToAction("Index", new { Id = Id });
         }
 
@@ -114,7 +131,14 @@ namespace PA.CampeonatoXadrez.Controllers
             var partida = _partidaRepositorio.Find(IdPartida);
             partida.JogadorIdVencedor = Id;
             _partidaRepositorio.Atualizar(partida);
-            return RedirectToAction("Index", new { Id =partida.CampeonatoId });
+
+            if (partida.Turno == 3 || partida.Turno == 4 || partida.Turno == 5)
+            {
+                var turno = partida.Turno;
+                var jogadorVencedor = _partidaRepositorio.First(a => a.Turno == turno && a.CampeonatoId == Id).JogadorVencedor.Nome;
+                return RedirectToAction("Index", new { Id = partida.CampeonatoId, Nome = jogadorVencedor });
+            }
+            return RedirectToAction("Index", new { Id = partida.CampeonatoId });
         }
     }
 }

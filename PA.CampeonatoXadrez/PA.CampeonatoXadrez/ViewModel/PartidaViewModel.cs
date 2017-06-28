@@ -14,7 +14,7 @@ namespace PA.CampeonatoXadrez.ViewModel
         public int JogadorId2 { get; set; }
         public int? JogadorIdVencedor { get; set; }
         public int CampeonatoId { get; set; }
-        public string Turno { get; set; }
+        public int Turno { get; set; }
 
         public string NomeJogador1 { get; set; }
         public string NomeJogador2 { get; set; }
